@@ -1,4 +1,4 @@
 module.exports = {
   lintOnSave: false,
-  publicPath: "/",
+  publicPath: "360-house-viewing/dist/",
 };
