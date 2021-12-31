@@ -151,6 +151,7 @@ export default {
       let sphereMaterial = new THREE.MeshBasicMaterial({ map: texture });
       this.sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
       this.scene.add(this.sphere);
+      this.addTipsSprite()
     },
     addTipsSprite(index = 0) {
       let tipTexture = new THREE.TextureLoader().load(
@@ -179,8 +180,8 @@ export default {
         opacity: 0,
       });
       this.sphere.material = sphereMaterial;
-      this.camera.updateProjectionMatrix();
       gsap.to(sphereMaterial, { transparent: true, opacity: 1, duration: 2 });
+      this.camera.updateProjectionMatrix();
       this.addTipsSprite(index);
     },
     render() {
@@ -279,7 +280,6 @@ export default {
     this.initCamera(element);
     this.initControls(element);
     this.initContent();
-    this.addTipsSprite();
     this.initRenderer(element);
     this.render();
     window.addEventListener("resize", this.onResize, false);
