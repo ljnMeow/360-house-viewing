@@ -151,7 +151,7 @@ export default {
       let sphereMaterial = new THREE.MeshBasicMaterial({ map: texture });
       this.sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
       this.scene.add(this.sphere);
-      this.addTipsSprite()
+      this.addTipsSprite();
     },
     addTipsSprite(index = 0) {
       let tipTexture = new THREE.TextureLoader().load(
@@ -204,12 +204,40 @@ export default {
       let mouse = new THREE.Vector2();
       mouse.x = (e.clientX / element.clientWidth) * 2 - 1;
       mouse.y = -(e.clientY / element.clientHeight) * 2 + 1;
+
       raycaster.setFromCamera(mouse, this.camera);
       let intersects = raycaster.intersectObjects(this.tipsSpriteList, true);
       if (intersects.length > 0 && intersects[0].object.content.showTitle) {
         this.changeContentAndtips(intersects[0].object.content.image);
         this.handleTooltipHide(e);
       }
+      // const x = e.clientX;
+      // const y = e.clientY;
+
+      // const pos = this.screenToWorld(x, y);
+      // console.log(pos);
+    },
+    screenToWorld(x, y) {
+      // 将屏幕坐标归一化为[-1, 1]的范围
+      const mouseX = (x / window.innerWidth) * 2 - 1;
+      const mouseY = -(y / window.innerHeight) * 2 + 1;
+
+      // 创建一个新的三维向量，并使用unproject方法将屏幕坐标转换为三维坐标
+      const vector = new THREE.Vector3(mouseX, mouseY, 0.5);
+      vector.unproject(this.camera);
+
+      // 创建一条从相机位置到转换后的三维坐标的射线
+      const raycaster = new THREE.Raycaster();
+      raycaster.setFromCamera({ x: mouseX, y: mouseY }, this.camera);
+
+      // 获取射线与场景中的所有物体的交点，并返回距离最近的交点的坐标
+      const intersects = raycaster.intersectObjects(this.scene.children);
+      if (intersects.length > 0) {
+        return intersects[0].point;
+      }
+
+      // 如果没有交点，则返回相机的位置
+      return this.camera.position;
     },
     onMousemove(e) {
       e.preventDefault();
